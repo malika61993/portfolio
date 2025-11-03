@@ -391,6 +391,108 @@ h2 {
     color: var(--primary-color);
 }
 
+/* --- Copy buttons, tooltip (blue), celebration bar (gold) --- */
+.sr-only { /* visually hidden for screen readers */
+    position: absolute !important;
+    height: 1px; width: 1px;
+    overflow: hidden; clip: rect(1px, 1px, 1px, 1px);
+    white-space: nowrap; border: 0; padding: 0; margin: -1px;
+}
+
+.copy-actions {
+    display: flex;
+    gap: 0.8rem;
+    margin-top: 1rem;
+    flex-wrap: wrap;
+}
+
+.copy-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.6rem 0.9rem;
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    color: var(--text-primary);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: transform 220ms ease, box-shadow 220ms ease, background 220ms ease;
+    font-weight: 600;
+}
+
+.copy-btn i { color: var(--primary-color); font-size: 1rem }
+.copy-btn .btn-text { font-size: 0.95rem }
+
+.copy-btn:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 20px rgba(0,160,220,0.08);
+    background: linear-gradient(180deg, rgba(0,160,220,0.06), rgba(0,255,157,0.03));
+}
+
+.tooltip {
+    position: absolute;
+    top: -34px;
+    right: 8px;
+    background: #0b63ff; /* blue */
+    color: white;
+    padding: 6px 8px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    opacity: 0;
+    transform: translateY(6px);
+    transition: opacity 180ms ease, transform 180ms ease;
+    pointer-events: none;
+    box-shadow: 0 8px 20px rgba(2,6,23,0.35);
+}
+
+.copy-btn.show-tooltip .tooltip {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Celebration bar (bright gold) */
+.celebration-bar {
+    position: fixed;
+    left: 50%;
+    top: 10px;
+    transform: translateX(-50%) translateY(-120%);
+    background: linear-gradient(90deg, #ffd54a, #ffc107 60%, #ffb300);
+    color: #1a1a1a;
+    padding: 12px 22px;
+    border-radius: 999px;
+    box-shadow: 0 12px 30px rgba(255,181,0,0.18);
+    z-index: 2200;
+    font-weight: 700;
+    letter-spacing: 0.2px;
+    opacity: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.celebration-bar.show {
+    animation: bar-slide 3500ms cubic-bezier(.22,.9,.3,1) forwards;
+}
+
+@keyframes bar-slide {
+    0% { transform: translateX(-50%) translateY(-120%); opacity: 0 }
+    10% { transform: translateX(-50%) translateY(0); opacity: 1 }
+    80% { transform: translateX(-50%) translateY(0); opacity: 1 }
+    100% { transform: translateX(-50%) translateY(-40%); opacity: 0 }
+}
+
+/* small sparkle icon inside the bar */
+.celebration-bar .sparkle {
+    width: 14px; height: 14px; border-radius: 3px; background: rgba(255,255,255,0.9);
+    box-shadow: 0 2px 8px rgba(255,215,0,0.6);
+}
+
+/* Responsive tweaks */
+@media (max-width: 520px) {
+    .copy-btn { padding: 0.5rem 0.7rem; font-size: 0.95rem }
+    .tooltip { right: -6px; top: -30px }
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     .nav-links {

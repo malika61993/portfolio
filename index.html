@@ -123,11 +123,11 @@
                 <div class="contact-info" data-aos="fade-right">
                     <div class="info-item">
                         <i class="fas fa-phone"></i>
-                        <p>+212 702-003769</p>
+                        <p id="phone-text">+212 702-003769</p>
                     </div>
                     <div class="info-item">
                         <i class="fas fa-envelope"></i>
-                        <p>malikaelmaich@gmail.com</p>
+                        <p id="email-text">malikaelmaich@gmail.com</p>
                     </div>
                     <div class="social-links">
                         <a href="http://www.linkedin.com/in/malika-elmaich" target="_blank">
@@ -137,6 +137,22 @@
                             <i class="fab fa-github"></i>
                         </a>
                     </div>
+                    <!-- Copy buttons: copy email and phone. Tooltip shown on click. -->
+                    <div class="copy-actions" data-aos="fade-up">
+                        <button class="copy-btn" id="copy-email" aria-label="Copy email address">
+                            <i class="fas fa-envelope-open-text" aria-hidden="true"></i>
+                            <span class="btn-text">Copy Email</span>
+                            <span class="tooltip" aria-hidden="true">Copied!</span>
+                        </button>
+
+                        <button class="copy-btn" id="copy-phone" aria-label="Copy phone number">
+                            <i class="fas fa-phone" aria-hidden="true"></i>
+                            <span class="btn-text">Copy Phone</span>
+                            <span class="tooltip" aria-hidden="true">Copied!</span>
+                        </button>
+                    </div>
+                    <!-- Announcer for screen readers (updates when copy happens) -->
+                    <div id="copy-announcer" aria-live="polite" class="sr-only"></div>
                 </div>
                 <form class="contact-form" data-aos="fade-left">
                     <div class="form-group">

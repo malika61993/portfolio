@@ -110,3 +110,133 @@ window.addEventListener('load', () => {
     document.querySelector('.typewriter').textContent = '';
     typeWriter();
 });
+
+/* -------------------------------------------------------------------
+   Copy buttons + Celebration Bar
+   - Copies email or phone to clipboard with reliable fallback
+   - Shows a small blue "Copied!" tooltip near the clicked button
+   - Shows a bright gold celebration bar at the top for ~3.5s
+   - Updates a live region for screen-readers
+   ------------------------------------------------------------------- */
+
+// Robust clipboard copy helper with fallback
+async function copyTextToClipboard(text) {
+    if (!text) return false;
+    try {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            await navigator.clipboard.writeText(text);
+            return true;
+        }
+    } catch (e) {
+        // fall through to fallback below
+    }
+    // Fallback for older browsers
+    try {
+        const textarea = document.createElement('textarea');
+        textarea.value = text;
+        textarea.setAttribute('readonly', '');
+        textarea.style.position = 'absolute';
+        textarea.style.left = '-9999px';
+        document.body.appendChild(textarea);
+        textarea.select();
+        const ok = document.execCommand('copy');
+        document.body.removeChild(textarea);
+        return ok;
+    } catch (err) {
+        return false;
+    }
+}
+
+// Show blue tooltip near button for a short duration (ms)
+function showTooltip(button, duration = 2000) {
+    if (!button) return;
+    button.classList.add('show-tooltip');
+    if (button._tooltipTimeout) clearTimeout(button._tooltipTimeout);
+    button._tooltipTimeout = setTimeout(() => {
+        button.classList.remove('show-tooltip');
+        button._tooltipTimeout = null;
+    }, duration);
+}
+
+// Create and show celebration bar (gold) at top of viewport for ~3500ms
+function showCelebrationBar(message = 'Copied to clipboard', duration = 3500) {
+    // avoid creating multiple bars at same time
+    if (document.querySelector('.celebration-bar')) return;
+    const bar = document.createElement('div');
+    bar.className = 'celebration-bar';
+    bar.setAttribute('role', 'status');
+    bar.setAttribute('aria-live', 'polite');
+
+    const sparkle = document.createElement('span');
+    sparkle.className = 'sparkle';
+    sparkle.setAttribute('aria-hidden', 'true');
+
+    const text = document.createElement('span');
+    text.className = 'bar-text';
+    text.textContent = message;
+
+    bar.appendChild(sparkle);
+    bar.appendChild(text);
+    document.body.appendChild(bar);
+
+    // trigger animation by adding show class
+    // slight timeout to ensure element is in DOM
+    requestAnimationFrame(() => {
+        bar.classList.add('show');
+    });
+
+    // remove after duration + small buffer
+    setTimeout(() => {
+        // remove with slight fade
+        bar.classList.remove('show');
+        setTimeout(() => bar.remove(), 400);
+    }, duration);
+}
+
+// wire up copy buttons
+function setupCopyButtons() {
+    const emailTextEl = document.getElementById('email-text');
+    const phoneTextEl = document.getElementById('phone-text');
+    const announcer = document.getElementById('copy-announcer');
+
+    const emailBtn = document.getElementById('copy-email');
+    const phoneBtn = document.getElementById('copy-phone');
+
+    function handleCopy(btn, value) {
+        copyTextToClipboard(value).then(success => {
+            if (success) {
+                showTooltip(btn, 2200); // show blue tooltip
+                showCelebrationBar('Copied ✓', 3500); // golden bar for ~3.5s
+                // update live region for screen readers
+                if (announcer) announcer.textContent = value + ' copied to clipboard';
+            } else {
+                // fallback visual
+                showTooltip(btn, 2200);
+                if (announcer) announcer.textContent = 'Copy failed';
+            }
+        });
+    }
+
+    if (emailBtn && emailTextEl) {
+        emailBtn.addEventListener('click', (e) => {
+            // read visible text so copy always matches displayed value
+            const value = emailTextEl.textContent.trim();
+            handleCopy(emailBtn, value);
+        });
+    }
+
+    if (phoneBtn && phoneTextEl) {
+        phoneBtn.addEventListener('click', (e) => {
+            const value = phoneTextEl.textContent.trim();
+            handleCopy(phoneBtn, value);
+        });
+    }
+}
+
+// initialize copy buttons when DOM ready
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', setupCopyButtons);
+} else {
+    setupCopyButtons();
+}
+
